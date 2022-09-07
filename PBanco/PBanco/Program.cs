@@ -47,8 +47,8 @@ namespace PBanco
         }
         static void IniciarBanco()
         {
-            int opcao = 0, matricula, senha;
-            bool condicaoDeParada, validarMatricula = true, validarSenha = true;
+            int opcao = 10, opcaoGerente = 0, opcaoCliente = 0, matricula = 0, senha = 0;
+            bool validarMatricula = true, validarSenha = true;
             char resposta;
 
             List<Gerente> gerentes = new List<Gerente>();
@@ -72,30 +72,54 @@ namespace PBanco
                 Console.WriteLine("\n\nVocê é um: ");
                 Console.WriteLine("\n1 - Funcionário\n2 - Cliente\n\n0 - Sair");
                 Console.Write("\nOpção: ");
-                opcao = int.Parse(Console.ReadLine());
+                try
+                {
+                    opcao = int.Parse(Console.ReadLine());
+                }
+                catch (System.FormatException)
+                {
+                    Console.WriteLine("\nFormato inválido!");
+                    Console.ReadKey();
+
+                }
 
                 switch (opcao)
                 {
-                    case 1: 
+                    case 1:
                         do
                         {
                             Console.Clear();
-
-                            Console.Write("Olá Gerente, \n\nInfome sua matricula: ");
-                            matricula = int.Parse(Console.ReadLine());
+                            try
+                            {
+                                Console.Write("Olá Gerente, \n\nInfome sua matricula: ");
+                                matricula = int.Parse(Console.ReadLine());
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Formato inválido!");
+                            }
 
                             foreach (var gerente in gerentes)
                             {
                                 if (gerente.Matricula == matricula)
                                 {
                                     validarMatricula = false;
+                                    g = gerente;
                                 }
                             }
 
                             if (!validarMatricula)
                             {
-                                Console.Write("Senha: ");
-                                senha = int.Parse(Console.ReadLine());
+                                try
+                                {
+                                    Console.Write("Senha: ");
+                                    senha = int.Parse(Console.ReadLine());
+                                }
+                                catch (Exception)
+                                {
+                                    Console.WriteLine("Formato inválido!");
+                                }
+                                
 
                                 foreach (var gerente in gerentes)
                                 {
@@ -121,13 +145,8 @@ namespace PBanco
                                 Console.ReadKey();
                             }
 
-                        } while (validarSenha);                 
+                        } while (validarSenha);
 
-
-                        if (true)
-                        {
-
-                        }
                         do
                         {
                             Console.Clear();
@@ -144,8 +163,7 @@ namespace PBanco
                             Console.Write("\nOpção: ");
                             try
                             {
-                                opcao = int.Parse(Console.ReadLine());
-                                condicaoDeParada = false;
+                                opcaoGerente = int.Parse(Console.ReadLine());
                             }
                             catch (System.FormatException)
                             {
@@ -155,9 +173,9 @@ namespace PBanco
                                 Console.WriteLine("Pressione uma tecla para continuar");
                                 Console.ReadKey();
                                 Console.Clear();
-                                condicaoDeParada = true;
+
                             }
-                            if (opcao < 1 || opcao > 5 && opcao != 9)
+                            if (opcaoGerente < 1 || opcaoGerente > 5 && opcaoGerente != 9)
                             {
                                 Console.Clear();
                                 Console.WriteLine("Opção inválida!");
@@ -165,10 +183,10 @@ namespace PBanco
                                 Console.WriteLine("Pressione uma tecla para continuar");
                                 Console.ReadKey();
                                 Console.Clear();
-                                condicaoDeParada = true;
+
                             }
 
-                            switch (opcao)
+                            switch (opcaoGerente)
                             {
                                 case 1:
                                     Console.Clear();
@@ -207,12 +225,9 @@ namespace PBanco
                                     Console.ReadKey();
                                     break;
 
-                                default:
-                                    Console.WriteLine("Opção inválida!");
-                                    break;
                             }
 
-                        } while (opcao != 9);
+                        } while (opcaoGerente != 9);
                         break;
 
                     case 2:
@@ -229,9 +244,10 @@ namespace PBanco
                             Console.Write("\nOpção: ");
                             try
                             {
-                                opcao = int.Parse(Console.ReadLine());
-                                condicaoDeParada = false;
+                                opcaoCliente = int.Parse(Console.ReadLine());
+
                             }
+
                             catch (System.FormatException)
                             {
 
@@ -240,19 +256,20 @@ namespace PBanco
                                 Console.WriteLine("Pressione uma tecla para continuar");
                                 Console.ReadKey();
                                 Console.Clear();
-                                condicaoDeParada = true;
+
                             }
-                            if (opcao < 1 || opcao > 4 && opcao != 9)
+
+                            if (opcaoCliente < 1 || opcaoCliente > 4 && opcaoCliente != 9)
                             {
                                 Console.WriteLine("Opção inválida!");
                                 Console.WriteLine("Escolha uma das opções informadas!");
                                 Console.WriteLine("Pressione uma tecla para continuar");
                                 Console.ReadKey();
                                 Console.Clear();
-                                condicaoDeParada = true;
+
                             }
 
-                            switch (opcao)
+                            switch (opcaoCliente)
                             {
                                 case 1:
                                     clientes.Add(cliente.SolicitarAbertura(clientes, agencias));
@@ -278,11 +295,15 @@ namespace PBanco
                                     Console.WriteLine("Opção inválida!");
                                     break;
                             }
-                        } while (opcao != 9);
-                        break;
 
-                    default:
+                        } while (opcaoCliente != 9);
                         break;
+                }
+
+                if (opcao < 0 || opcao > 2)
+                {
+                    Console.WriteLine("Error! Escolha uma das opções listadas!");
+                    Console.ReadKey();
                 }
 
             } while (opcao != 0);
