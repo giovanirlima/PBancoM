@@ -59,10 +59,11 @@ namespace PBanco.Entities
         }
         public Cliente CadastrarCliente(List<Cliente> clientes, List<Agencia> agencias)
         {
+            DateTime nascimento = DateTime.Now;
             Cliente cliente1;
             Gerente gerente = new Gerente();
             int id;
-            double chequeEspecial;
+            double chequeEspecial, salario = 0;
             bool validacao;
 
             Console.Clear();
@@ -75,8 +76,24 @@ namespace PBanco.Entities
             Console.Write("Informe seu CPF: ");
             string cpf = Console.ReadLine();
 
-            Console.Write("Informe sua data de nascimento: ");
-            DateTime nascimento = DateTime.Parse(Console.ReadLine());
+            do
+            {
+                Console.Write("Informe sua data de nascimento: ");
+                try
+                {
+                    nascimento = DateTime.Parse(Console.ReadLine());
+                    validacao = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("\nFormato invalido!");
+                    Console.WriteLine("(dd/mm/yyyy) ou (dd.mm.yyyy)\n");
+                    validacao = true;
+                }
+                
+
+            } while (validacao);
+            
 
             Console.Write("Informe seu Telefone: ");
             string telefone = Console.ReadLine();
@@ -85,8 +102,32 @@ namespace PBanco.Entities
 
             endereco.CadastrarEndereco();
 
-            Console.Write("Informe seu salário mensal: R$ ");
-            double salario = double.Parse(Console.ReadLine());
+            do
+            {
+                Console.Write("Informe seu salário mensal: R$ ");
+                try
+                {
+                    salario = double.Parse(Console.ReadLine());
+                    validacao = false;
+                }
+
+                catch (Exception)
+                {
+                    Console.WriteLine("\nParamento inválido, digite apenas números!\n");
+                    validacao = true;
+                }
+
+                if (salario < 0)
+                {
+                    if (!validacao)
+                    {
+                        Console.WriteLine("\nNão é possivél declarar um salário negativo!\n");
+                        validacao = true;
+                    }
+                }                
+
+            } while (validacao);
+            
 
             chequeEspecial = VerificarTipoDeConta(salario);
 
@@ -142,7 +183,7 @@ namespace PBanco.Entities
 
                 Console.WriteLine("Pressione enter para continuar!");
 
-                cliente1 = new Cliente(nome, cpf, nascimento, telefone, endereco, salario, new ContaCorrente(id, senha, agencias[idAgencia - 1], 0, chequeEspecial, new Cartao(id, 0, 30, false)), new ContaPoupanca(id, agencias[idAgencia - 1], 0), new Cartao(id, 0, 30, false));
+                cliente1 = new Cliente(nome, cpf, nascimento, telefone, endereco, salario, new ContaCorrente(id, senha, agencias[idAgencia - 1], 0, chequeEspecial, new Cartao(id, 0, 30, false)), new ContaPoupanca(id, agencias[idAgencia - 1], 0));
 
                 return cliente1;
             }

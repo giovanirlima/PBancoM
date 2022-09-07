@@ -1,6 +1,7 @@
 ﻿using System;
 using PBanco.Entities;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace PBanco
 {
@@ -39,16 +40,16 @@ namespace PBanco
         {
             List<Cliente> clientes = new List<Cliente>();
 
-            clientes.Add(new Cliente("João", "123.157.259-55", new DateTime(1994, 12, 03), "(15) 99665-1799", new Endereco("R: Fabio papini", 915, "Araraquara"), 1000, new ContaCorrente(123, 123, agencias[1], 0, 1000, new Cartao(0, 0, 30, false)), new ContaPoupanca(123, agencias[1], 0), new Cartao(123, 0, 30, false)));
-            clientes.Add(new Cliente("Pedro", "145.177.229-33", new DateTime(1970, 01, 05), "(15) 99662-1855", new Endereco("R: Mario Pestana", 917, "Araraquara"), 2000, new ContaCorrente(456, 456, agencias[2], 0, 2500, new Cartao(0, 0, 30, false)), new ContaPoupanca(456, agencias[2], 0), new Cartao(456, 0, 30, false)));
-            clientes.Add(new Cliente("Mário", "773.152.524-00", new DateTime(1986, 07, 13), "(15) 99725-6614", new Endereco("R: Alamedas", 325, "Araraquara"), 5000, new ContaCorrente(789, 789, agencias[0], 0, 5000, new Cartao(0, 0, 30, false)), new ContaPoupanca(789, agencias[0], 0), new Cartao(789, 0, 30, false)));
+            clientes.Add(new Cliente("João", "123.157.259-55", new DateTime(1994, 12, 03), "(15) 99665-1799", new Endereco("R: Fabio papini", 915, "Araraquara"), 1000, new ContaCorrente(123, 123, agencias[1], 0, 1000, new Cartao(0, 0, 30, false)), new ContaPoupanca(123, agencias[1], 0)));
+            clientes.Add(new Cliente("Pedro", "145.177.229-33", new DateTime(1970, 01, 05), "(15) 99662-1855", new Endereco("R: Mario Pestana", 917, "Araraquara"), 2000, new ContaCorrente(456, 456, agencias[2], 0, 2500, new Cartao(0, 0, 30, false)), new ContaPoupanca(456, agencias[2], 0)));
+            clientes.Add(new Cliente("Mário", "773.152.524-00", new DateTime(1986, 07, 13), "(15) 99725-6614", new Endereco("R: Alamedas", 325, "Araraquara"), 5000, new ContaCorrente(789, 789, agencias[0], 0, 5000, new Cartao(0, 0, 30, false)), new ContaPoupanca(789, agencias[0], 0)));
 
             return clientes;
         }
         static void IniciarBanco()
         {
-            int opcao = 10, opcaoGerente = 0, opcaoCliente = 0, matricula = 0, senha = 0;
-            bool validarMatricula = true, validarSenha = true;
+            int opcao = 10, opcaoGerente, opcaoCliente, matricula = 0, senha = 0;
+            bool validarMatricula = true, validarSenha = true, condicaoDeParada;
             char resposta;
 
             List<Gerente> gerentes = new List<Gerente>();
@@ -75,12 +76,26 @@ namespace PBanco
                 try
                 {
                     opcao = int.Parse(Console.ReadLine());
+                    condicaoDeParada = false;
                 }
                 catch (System.FormatException)
                 {
                     Console.WriteLine("\nFormato inválido!");
+                    Console.WriteLine("Pressione enter para escolher novamente!");
                     Console.ReadKey();
+                    condicaoDeParada = true;
 
+                }
+
+                if (opcao < 0 || opcao > 2)
+                {
+                    if (!condicaoDeParada)
+                    {
+                        Console.WriteLine("\nError! Escolha uma das opções listadas!");
+                        Console.WriteLine("Pressione enter para escolher novamente!");
+                        Console.ReadKey();
+                        condicaoDeParada = true;
+                    }                    
                 }
 
                 switch (opcao)
@@ -119,7 +134,7 @@ namespace PBanco
                                 {
                                     Console.WriteLine("Formato inválido!");
                                 }
-                                
+
 
                                 foreach (var gerente in gerentes)
                                 {
@@ -172,7 +187,7 @@ namespace PBanco
                                 Console.WriteLine("Escolha uma das opções informadas!");
                                 Console.WriteLine("Pressione uma tecla para continuar");
                                 Console.ReadKey();
-                                Console.Clear();
+                                return;
 
                             }
                             if (opcaoGerente < 1 || opcaoGerente > 5 && opcaoGerente != 9)
@@ -182,7 +197,7 @@ namespace PBanco
                                 Console.WriteLine("\nEscolha uma das opções informadas!");
                                 Console.WriteLine("Pressione uma tecla para continuar");
                                 Console.ReadKey();
-                                Console.Clear();
+                                return;
 
                             }
 
@@ -245,28 +260,22 @@ namespace PBanco
                             try
                             {
                                 opcaoCliente = int.Parse(Console.ReadLine());
-
                             }
 
                             catch (System.FormatException)
                             {
-
                                 Console.WriteLine("Opção inválida!");
-                                Console.WriteLine("Escolha uma das opções informadas!");
-                                Console.WriteLine("Pressione uma tecla para continuar");
+                                Console.WriteLine("Pressione enter para voltar ao menu");
                                 Console.ReadKey();
-                                Console.Clear();
-
+                                return;
                             }
 
                             if (opcaoCliente < 1 || opcaoCliente > 4 && opcaoCliente != 9)
                             {
-                                Console.WriteLine("Opção inválida!");
-                                Console.WriteLine("Escolha uma das opções informadas!");
-                                Console.WriteLine("Pressione uma tecla para continuar");
-                                Console.ReadKey();
-                                Console.Clear();
 
+                                Console.WriteLine("Digite um número válido!");
+                                Console.WriteLine("Pressione enter para voltar ao menu");
+                                Console.ReadKey();
                             }
 
                             switch (opcaoCliente)
@@ -289,22 +298,12 @@ namespace PBanco
                                 case 4:
                                     cliente.AcessarConta(clientes);
                                     break;
-
-
-                                default:
-                                    Console.WriteLine("Opção inválida!");
-                                    break;
+                                
                             }
 
                         } while (opcaoCliente != 9);
                         break;
-                }
-
-                if (opcao < 0 || opcao > 2)
-                {
-                    Console.WriteLine("Error! Escolha uma das opções listadas!");
-                    Console.ReadKey();
-                }
+                }                            
 
             } while (opcao != 0);
         }

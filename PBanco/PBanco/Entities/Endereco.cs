@@ -25,11 +25,37 @@ namespace PBanco.Entities
 
         public Endereco CadastrarEndereco()
         {
+            int n = 0;
+            bool validacao = false;
+
             Console.Write("Informe o nome da Rua: ");
             string rua = Console.ReadLine();
 
-            Console.Write("Informe o número do Local: ");
-            int n = int.Parse(Console.ReadLine());
+            do
+            {
+                Console.Write("Informe o número do Local: ");
+                try
+                {
+                    n = int.Parse(Console.ReadLine());
+                    validacao = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("\nDigite apenas números!\n");
+                    validacao = true;
+                }
+
+                if (n < 0)
+                {
+                    if (!validacao)
+                    {
+                        Console.WriteLine("\nNúmero não pode ser negativo!\n");
+                        validacao = true;
+                    }                    
+                }                
+
+            } while (validacao);
+
 
             Console.Write("Informe a Cidade: ");
             string cidade = Console.ReadLine();

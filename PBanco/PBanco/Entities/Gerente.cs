@@ -209,46 +209,64 @@ namespace PBanco.Entities
         public bool AprovarEmprestimo(Cliente cliente, double valorSolicitado)
         {
             bool validacao;
+            int resposta = 0;                      
 
-            Console.Clear();
-
-            Console.WriteLine("olá sr.(a) Gerente!");
-            Console.WriteLine("\nPedido de empréstimo para aprovação");
-            Console.WriteLine($"\nNome: {cliente.Nome}");
-            Console.WriteLine($"Renda: R$ {cliente.Salario.ToString("F2")}");
-            Console.WriteLine($"Valor solicitado: R$ {valorSolicitado.ToString("F2")}");
-            Console.WriteLine();
             do
             {
+                Console.Clear();
+
+                Console.WriteLine("olá sr.(a) Gerente!");
+                Console.WriteLine("\nPedido de empréstimo para aprovação");
+                Console.WriteLine($"\nNome: {cliente.Nome}");
+                Console.WriteLine($"Renda: R$ {cliente.Salario.ToString("F2")}");
+                Console.WriteLine($"Valor solicitado: R$ {valorSolicitado.ToString("F2")}");
+                Console.WriteLine();
                 Console.WriteLine("1 - Aprovar\n2 - Recusar");
                 Console.Write("\nOpção: ");
-                int resposta = int.Parse(Console.ReadLine());
 
-                validacao = false;
+                try
+                {
+                    resposta = int.Parse(Console.ReadLine());
+                    validacao = false;
+                }
+
+                catch (Exception)
+                {
+                    Console.WriteLine("\nOpção inválida!\n");
+                    Console.WriteLine("Digite enter para continuar");
+                    Console.ReadKey();
+                    validacao = true;
+                }
 
                 if (resposta != 1 && resposta != 2)
                 {
-                    Console.WriteLine("Opção escolhida é inexistente!");
-                    Console.WriteLine("Escolha 1 ou 2");
-                    Console.Clear();
-                    validacao = true;
-                    return false;
+                    if (!validacao)
+                    {
+                        Console.WriteLine("\nOpção escolhida é inexistente!");
+                        Console.WriteLine("Escolha 1 ou 2\n");
+                        Console.WriteLine("Digite enter para continuar");
+                        Console.ReadKey();
+                        validacao = true;
+                    }                    
                 }
 
-                else
-                {
-                    if (resposta == 1)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                Console.Clear();
 
             } while (validacao);
+
+            if (resposta == 1)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
         }
+
+
+        
         public void VerFuncionariosCadastrados(List<Gerente> gerentes, List<Funcionario> funcionarios)
         {
             Console.Clear();
@@ -283,7 +301,6 @@ namespace PBanco.Entities
                 Console.WriteLine(agencia.ToString());
             }
 
-            Console.Clear();
         }
         public void VerClientesCadastrados(List<Cliente> clientes)
         {
@@ -301,5 +318,6 @@ namespace PBanco.Entities
         {
             return base.ToString();
         }
+
     }
 }

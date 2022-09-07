@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace PBanco.Entities
         public List<double> Parcelas { get; set; }
         public Cartao CartaoDeCredito { get; set; }
         public List<Pagamento> Registro { get; set; }
+
         public ContaCorrente()
         {
         }
@@ -72,15 +74,25 @@ namespace PBanco.Entities
         public void Sacar(Cliente cliente)
         {
             bool verificacao;
+            int resposta = 0;
 
             Console.Clear();
 
             Console.Write("Informe o valor do saque: R$ ");
             double saque = double.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nDeseja retirar o valor de qual conta");
-            Console.Write("\n1 - Conta Corrente\n2 - Conta Poupança\n\nOpção: ");
-            int resposta = int.Parse(Console.ReadLine());
+            do
+            {
+                Console.WriteLine("\nDeseja retirar o valor de qual conta");
+                Console.Write("\n1 - Conta Corrente\n2 - Conta Poupança\n\nOpção: ");
+                resposta = int.Parse(Console.ReadLine());
+
+                if (resposta != 1 && resposta != 2)
+                {
+                    Console.WriteLine("\nOpção inválida!\n");
+                }
+
+            } while (resposta != 1 && resposta != 2);
 
             if (resposta == 1)
             {
@@ -93,7 +105,7 @@ namespace PBanco.Entities
                     Saldo -= saque;
                     Console.WriteLine("\nOperação efetuada com sucesso!");
 
-                    cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Saque conta corrente", saque));
+                    cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Saque conta corrente", saque, "-"));
                 }
 
                 else
@@ -109,7 +121,7 @@ namespace PBanco.Entities
                     cliente.ContaPoupanca.SaldoCP -= saque;
                     Console.WriteLine("\nOperação efetuada com sucesso!");
 
-                    cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Saque conta poupança", saque));
+                    cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Saque conta poupança", saque, "-"));
                 }
 
                 else
@@ -134,65 +146,89 @@ namespace PBanco.Entities
             if (resposta == 1)
             {
                 Saldo += deposito;
-                Registro.Add(new Pagamento(DateTime.Now, "Deposito conta corrente", deposito));
+                Registro.Add(new Pagamento(DateTime.Now, "Deposito conta corrente", deposito, "+"));
                 Console.WriteLine("\nDeposito efetuado com sucesso!");
             }
 
             else
             {
                 cliente.ContaPoupanca.SaldoCP += deposito;
-                Registro.Add(new Pagamento(DateTime.Now, "Deposito conta poupanca", deposito));
+                Registro.Add(new Pagamento(DateTime.Now, "Deposito conta poupanca", deposito, "+"));
                 Console.WriteLine("\nDeposito efetuado com sucesso!");
             }
 
         }
         public void TransferirDinheiro(Cliente cliente, List<Cliente> clientes)
         {
-            bool validacaoId = true;
+            bool validacaoId = false;
+            double valor;
+            Cliente recebedor = new Cliente();
+
             Console.Clear();
 
-            do
+            Console.WriteLine($"Ola Sr.{cliente.Nome}");
+
+            Console.Write("\nInforme o Id da conta que deseja realizar a transfêrencia: ");
+            int id = int.Parse(Console.ReadLine());
+
+            foreach (var verificarRecebedor in clientes)
             {
-                Console.Write("Informe o Id da conta que deseja realizar a transfêrencia: ");
-                int id = int.Parse(Console.ReadLine());
-
-                foreach (var verificarRecebedor in clientes)
+                if (verificarRecebedor.ContaCorrente.Id == id)
                 {
-                    if (verificarRecebedor.ContaCorrente.Id == id)
+                    recebedor = verificarRecebedor;
+                    validacaoId = true;
+                }
+            }
+
+            if (validacaoId)
+            {
+                if (cliente.ContaCorrente.Id != recebedor.ContaCorrente.Id)
+                {
+                    do
                     {
-                        validacaoId = false;
-                        Console.Write("Informe o valor que deseja transferir: R$");
-                        double valor = double.Parse(Console.ReadLine());
+                        Console.Write("Informe o valor que deseja transferir: R$ ");
+                        valor = double.Parse(Console.ReadLine());
 
-                        cliente.ContaCorrente.CobrarSaldoDevedor(cliente);
-
-                        bool saldoNegativo = VerificarSaldoDevedor(cliente, valor);
-
-                        if (!saldoNegativo)
+                        if (valor <= 0)
                         {
-                            Console.WriteLine("Você não possue saldo suficiente para está transação!");
-                            Console.WriteLine("Processo cancelado!");
+                            Console.WriteLine("\nValor não pode ser menor ou igual a R$ 0,00\n");
                         }
-                        else
-                        {
 
-                            cliente.ContaCorrente.Saldo -= valor;
-                            verificarRecebedor.ContaCorrente.Saldo += valor;
-                            Console.WriteLine($"\nTransfêrencia efetuada com sucesso para {verificarRecebedor.Nome}!");
+                    } while (valor <= 0);
 
-                            Registro.Add(new Pagamento(DateTime.Now, "Transfêrencia Bancaria", valor));
-                        }
+                    cliente.ContaCorrente.CobrarSaldoDevedor(cliente);
+
+                    bool saldoNegativo = VerificarSaldoDevedor(cliente, valor);
+
+                    if (!saldoNegativo)
+                    {
+                        Console.WriteLine("Você não possue saldo suficiente para está transação!");
+                        Console.WriteLine("Processo cancelado!");
+                    }
+
+                    else
+                    {
+                        cliente.ContaCorrente.Saldo -= valor;
+                        recebedor.ContaCorrente.Saldo += valor;
+                        Console.WriteLine($"\nTransfêrencia efetuada com sucesso para {recebedor.Nome}!");
+
+                        Registro.Add(new Pagamento(DateTime.Now, "Transfêrencia Bancaria", valor, "-"));
                     }
                 }
 
-                if (validacaoId)
+                else
                 {
-                    Console.Clear();
-
-                    Console.WriteLine("Id informado é inválido!");
+                    Console.WriteLine("\nVocê não pode fazer uma transfêrencia para você mesmo!");
+                    Console.WriteLine("Pressione enter para voltar ao menu anterior!");
                 }
+            }
 
-            } while (validacaoId);
+            else
+            {
+                Console.WriteLine("\nId inválido!");
+                Console.WriteLine("Pressione enter para voltar ao menu anterior!");
+                return;
+            }
         }
         public void ImprimirExtrato()
         {
@@ -207,14 +243,42 @@ namespace PBanco.Entities
         }
         public void PagarContas(Cliente cliente)
         {
+            double valor = 0;
+            int formaDePagamento = 0;
+            bool verificarResposta = false;
+
             Console.Clear();
 
-            Console.Write("Informe o valor da conta que deseja pagar: R$ ");
-            double valor = double.Parse(Console.ReadLine());
+            do
+            {
+                Console.Write("Informe o valor da conta que deseja pagar: R$ ");
+                valor = double.Parse(Console.ReadLine());
 
-            Console.WriteLine("\nForma de pagamento será\n\n1 - Débito \n2 - Crédito? ");
-            Console.Write("\nOpção: ");
-            int formaDePagamento = int.Parse(Console.ReadLine());
+                if (valor <= 0)
+                {
+                    Console.WriteLine("\nVocê não pode pagar uma conta, com o valor sendo menor ou igual a R$ 0,00");
+                    Console.WriteLine("Pressione enter para retornar ao menu anterior!");
+                    return;
+                }
+
+            } while (valor <= 0);
+
+            do
+            {
+                Console.WriteLine("\nForma de pagamento será\n\n1 - Débito \n2 - Crédito ");
+                Console.Write("\nOpção: ");
+                formaDePagamento = int.Parse(Console.ReadLine());
+                verificarResposta = true;
+
+                if (formaDePagamento != 1 && formaDePagamento != 2)
+                {
+                    Console.WriteLine("\nOpção inválida!");
+                    Console.WriteLine("Digite uma opção enter 1 ou 2");
+                    verificarResposta = false;
+                }
+
+            } while (!verificarResposta);
+
 
             if (formaDePagamento == 1)
             {
@@ -227,7 +291,7 @@ namespace PBanco.Entities
 
                     Saldo -= valor;
 
-                    Registro.Add(new Pagamento(DateTime.Now, "Pagamento de Conta", valor));
+                    Registro.Add(new Pagamento(DateTime.Now, "Pagamento de Conta", valor, "-"));
 
                     Console.WriteLine("\nPagamento efetuado com sucesso!");
                 }
@@ -244,9 +308,9 @@ namespace PBanco.Entities
                 {
                     if (cliente.ContaCorrente.CartaoDeCredito.Limite >= valor)
                     {
-                        Console.WriteLine("Pagamento aprovado!");
+                        Console.WriteLine("\nPagamento aprovado!");
                         cliente.ContaCorrente.CartaoDeCredito.Limite -= valor;
-                        cliente.ContaCorrente.CartaoDeCredito.RegistroCartao.Add(new Pagamento(DateTime.Now, "Pagamento de contas", valor));
+                        cliente.ContaCorrente.CartaoDeCredito.RegistroCartao.Add(new Pagamento(DateTime.Now, "Pagamento de contas", valor, "-"));
                     }
 
                     else
@@ -258,14 +322,7 @@ namespace PBanco.Entities
                 {
                     Console.WriteLine("\nCartão bloqueado! Desbloqueie seu cartão.");
                 }
-
-
             }
-
-
-
-
-
         }
         public bool VerificarSaldoDevedor(Cliente cliente, double valor)
         {
@@ -330,7 +387,7 @@ namespace PBanco.Entities
                 if (cliente.ContaCorrente.Saldo >= cliente.ContaCorrente.ChequeEspecial)
                 {
                     cliente.ContaCorrente.Saldo -= cliente.ContaCorrente.ChequeEspecial;
-                    cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Valor cobrado cheque especial", cliente.ContaCorrente.ChequeEspecial));
+                    cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Valor cobrado cheque especial", cliente.ContaCorrente.ChequeEspecial, "-"));
                     cliente.ContaCorrente.ChequeEspecial -= 20;
                     cliente.ContaCorrente.LimiteUtilizado = false;
                 }
@@ -360,6 +417,7 @@ namespace PBanco.Entities
                     quantidadeParcelas++;
                     pularLinha++;
                 }
+                Console.WriteLine("\nPressione enter para sair!");
             }
 
             else
@@ -392,20 +450,25 @@ namespace PBanco.Entities
                     pularLinha++;
                 }
 
-                Console.WriteLine("\nDeseja pagar pagar parcela");
+                Console.WriteLine("\nDeseja pagar parcela");
                 Console.Write("\n1 - Sim\n2 - Não\n\nOpção: ");
                 int resposta = int.Parse(Console.ReadLine());
 
                 if (resposta == 1)
                 {
-                    Console.WriteLine("\nValor será debitado de sua conta corrente!");
-
                     if (cliente.ContaCorrente.Saldo >= cliente.ContaCorrente.Parcelas[0])
                     {
+                        Console.WriteLine("\nValor será debitado de sua conta corrente!");
                         Console.WriteLine("\nPagamento efetuado com sucesso!");
                         cliente.ContaCorrente.Saldo -= cliente.ContaCorrente.Parcelas[0];
-                        cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Pagamento de empréstimo", cliente.ContaCorrente.Parcelas[0]));
+                        cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Pagamento parcela empréstimo", cliente.ContaCorrente.Parcelas[0], "-"));
                         cliente.ContaCorrente.Parcelas.RemoveAt(0);
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("\nVocê não possui saldo suficiente na conta!");
+                        Console.WriteLine("\nPagamento cancelado!");
                     }
                 }
 

@@ -9,23 +9,25 @@ namespace PBanco.Entities
     public class Pagamento
     {
         public DateTime DataTransacao { get; set; }
-        public string TipoDaOperacao { get; set; }
+        public string MetodoOperacao { get; set; }
+        public string Tipo { get; set; }
         public double Valor { get; set; }
 
         public Pagamento()
         {
         }
 
-        public Pagamento(DateTime dataTransacoes, string tipoDaOperacao, double valor)
+        public Pagamento(DateTime dataTransacoes, string tipoDaOperacao, double valor, string tipo)
         {
             DataTransacao = dataTransacoes;
-            TipoDaOperacao = tipoDaOperacao;
+            MetodoOperacao = tipoDaOperacao;
             Valor = valor;
+            Tipo = tipo;
         }
 
         public override string ToString()
         {
-            return $"Tipo da operação: {TipoDaOperacao} - Valor: R$ {Valor:F2} - Data da transação: {DataTransacao.ToShortDateString()}";
+            return $"Tipo da operação: {MetodoOperacao}\nValor: R$ {Tipo} {Valor:F2}\nData da transação: {DataTransacao.ToShortDateString()}\n";
         }
     }
 }

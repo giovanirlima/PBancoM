@@ -47,12 +47,14 @@ namespace PBanco.Entities
                 Console.WriteLine(registro.ToString());
             }
 
-            Console.WriteLine($"\nSaldo Restante {cliente.ContaCorrente.CartaoDeCredito.Limite.ToString("F2")}");
+            Console.WriteLine($"\nSaldo Restante R$ {cliente.ContaCorrente.CartaoDeCredito.Limite.ToString("F2")}");
         }
 
         public void GerarFatura(Cliente cliente)
         {
+            bool condicaoDeParada = false;
             double soma = 0;
+            int opcao = 0;
 
             Console.Clear();
 
@@ -68,11 +70,39 @@ namespace PBanco.Entities
 
             if (soma > 0)
             {
+                do
+                {
+                    Console.WriteLine("\nQual será forma de pagamento");
+                    Console.WriteLine("\n1 - Dinheiro\n2 - Débito em conta");
+                    Console.Write("\nOpção: ");                    
 
-                Console.WriteLine("\nQual será forma de pagamento");
-                Console.WriteLine("\n1 - Dinheiro\n2 - Débito em conta");
-                Console.Write("\nOpção: ");
-                int opcao = int.Parse(Console.ReadLine());
+                    try
+                    {
+                        opcao = int.Parse(Console.ReadLine());
+                        condicaoDeParada = false;
+                    }
+
+                    catch (Exception)
+                    {
+                        Console.WriteLine("\nOpção inválida!\n");
+                        Console.WriteLine("Pressione enter para continuar!");
+                        Console.ReadKey();
+                        condicaoDeParada = true;
+                    }
+
+                    if (opcao != 1 && opcao != 2)
+                    {
+                        if (!condicaoDeParada)
+                        {
+                            Console.WriteLine("\nOpção escolhida é inexistente!");
+                            Console.WriteLine("Escolha 1 ou 2\n");
+                            Console.WriteLine("Pressione enter para continuar!");
+                            Console.ReadKey();
+                            condicaoDeParada = true;
+                        }
+                    }
+
+                } while (condicaoDeParada);
 
                 if (opcao == 1)
                 {
@@ -89,8 +119,8 @@ namespace PBanco.Entities
                         if (valor > soma)
                         {
                             Console.WriteLine($"Seu troco será de: R$ {(valor - soma).ToString("F2")}");
-                        }                      
-                        
+                        }
+
                     }
 
                     else
@@ -114,10 +144,10 @@ namespace PBanco.Entities
                         if (cliente.ContaCorrente.Saldo >= soma)
                         {
                             Console.WriteLine("\nPagamento da fatura efetuado com sucesso!");
-                            Console.WriteLine($"Saldo restante em conta é: {cliente.ContaCorrente.Saldo.ToString("F2")}");
                             cliente.ContaCorrente.Saldo -= soma;
                             cliente.ContaCorrente.CartaoDeCredito.Limite += soma;
-                            cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Pagamento fatura cartão", soma));
+                            Console.WriteLine($"Saldo restante em conta é: {cliente.ContaCorrente.Saldo.ToString("F2")}");
+                            cliente.ContaCorrente.Registro.Add(new Pagamento(DateTime.Now, "Pagamento fatura cartão", soma, "-"));
                             RegistroCartao = new List<Pagamento>();
                             return;
                         }
