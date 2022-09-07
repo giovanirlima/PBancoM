@@ -39,9 +39,9 @@ namespace PBanco
         {
             List<Cliente> clientes = new List<Cliente>();
 
-            clientes.Add(new Cliente("João", "123.157.259-55", new DateTime(1994, 12, 03), "(15) 99665-1799", new Endereco("R: Fabio papini", 915, "Araraquara"), 1000, new ContaCorrente(123, 123, agencias[1], 0, 0, new Cartao(0, 0, 30, false)), new ContaPoupanca(123, agencias[1], 0), new Cartao(123, 0, 30, false)));
-            clientes.Add(new Cliente("Pedro", "145.177.229-33", new DateTime(1970, 01, 05), "(15) 99662-1855", new Endereco("R: Mario Pestana", 917, "Araraquara"), 2000, new ContaCorrente(456, 456, agencias[2], 0, 0, new Cartao(0, 0, 30, false)), new ContaPoupanca(456, agencias[2], 0), new Cartao(456, 0, 30, false)));
-            clientes.Add(new Cliente("Mário", "773.152.524-00", new DateTime(1986, 07, 13), "(15) 99725-6614", new Endereco("R: Alamedas", 325, "Araraquara"), 5000, new ContaCorrente(789, 789, agencias[0], 0, 0, new Cartao(0, 0, 30, false)), new ContaPoupanca(789, agencias[0], 0), new Cartao(789, 0, 30, false)));
+            clientes.Add(new Cliente("João", "123.157.259-55", new DateTime(1994, 12, 03), "(15) 99665-1799", new Endereco("R: Fabio papini", 915, "Araraquara"), 1000, new ContaCorrente(123, 123, agencias[1], 0, 1000, new Cartao(0, 0, 30, false)), new ContaPoupanca(123, agencias[1], 0), new Cartao(123, 0, 30, false)));
+            clientes.Add(new Cliente("Pedro", "145.177.229-33", new DateTime(1970, 01, 05), "(15) 99662-1855", new Endereco("R: Mario Pestana", 917, "Araraquara"), 2000, new ContaCorrente(456, 456, agencias[2], 0, 2500, new Cartao(0, 0, 30, false)), new ContaPoupanca(456, agencias[2], 0), new Cartao(456, 0, 30, false)));
+            clientes.Add(new Cliente("Mário", "773.152.524-00", new DateTime(1986, 07, 13), "(15) 99725-6614", new Endereco("R: Alamedas", 325, "Araraquara"), 5000, new ContaCorrente(789, 789, agencias[0], 0, 5000, new Cartao(0, 0, 30, false)), new ContaPoupanca(789, agencias[0], 0), new Cartao(789, 0, 30, false)));
 
             return clientes;
         }

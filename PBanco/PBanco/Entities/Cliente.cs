@@ -441,13 +441,15 @@ namespace PBanco.Entities
                         }
                     }
 
-                    else if (validacao)
-                    {
-                        Console.WriteLine("\nId inválido!");
-                        Console.WriteLine("Pressione enter para continuar!");
-                        Console.ReadKey();
-                        return;
-                    }
+                    
+                }
+
+                if (validacao)
+                {
+                    Console.WriteLine("\nId inválido!");
+                    Console.WriteLine("Pressione enter para continuar!");
+                    Console.ReadKey();
+                    return;
                 }
 
             } while (validacao);
