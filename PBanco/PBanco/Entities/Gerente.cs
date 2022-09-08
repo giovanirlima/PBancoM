@@ -17,13 +17,16 @@ namespace PBanco.Entities
 
         public void CadastrarGerente(List<Gerente> gerentes, List<Funcionario> funcionarios, List<Agencia> agencias)
         {
+            int matricula, senha;
+            int idAgencia = 0;
+            bool validacao = false, verificao = false;
+
+
             Console.Clear();
             Console.WriteLine("Olá Gerente\n");
             Console.Write("Informe o nome do novo funcionário: ");
             string nome = Console.ReadLine();
 
-            bool validacao;
-            int matricula, senha;
 
             do
             {
@@ -68,9 +71,37 @@ namespace PBanco.Entities
 
             }
 
-            Console.Write("\nID: ");
+            do
+            {
+                Console.Write("\nID: ");
 
-            int idAgencia = int.Parse(Console.ReadLine());
+                try
+                {
+                    idAgencia = int.Parse(Console.ReadLine());
+                    validacao = false;
+                    verificao = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("\nParametro de entrada é inválido!");
+                    validacao = true;
+                }
+
+                foreach (var agencia in agencias)
+                {
+                    if (agencia.Id == idAgencia)
+                    {
+                        verificao = true;
+                    }
+                }
+
+                if (!verificao)
+                {
+                    Console.WriteLine("\nId escolhido é inválido!");
+                    validacao = true;
+                }
+
+            } while (validacao);
 
             Console.WriteLine("\nFuncionário cadastrado com sucesso!");
 
@@ -86,8 +117,8 @@ namespace PBanco.Entities
             Console.Write("Informe o nome do novo funcionário: ");
             string nome = Console.ReadLine();
 
-            bool validacao;
-            int matricula, senha;
+            bool validacao, verificao = false;
+            int matricula, senha, idAgencia = 0;
 
             do
             {
@@ -132,9 +163,37 @@ namespace PBanco.Entities
 
             }
 
-            Console.Write("\nID: ");
+            do
+            {
+                Console.Write("\nID: ");
 
-            int idAgencia = int.Parse(Console.ReadLine());
+                try
+                {
+                    idAgencia = int.Parse(Console.ReadLine());
+                    validacao = false;
+                    verificao = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("\nParametro de entrada é inválido!");
+                    validacao = true;
+                }
+
+                foreach (var agencia in agencias)
+                {
+                    if (agencia.Id == idAgencia)
+                    {
+                        verificao = true;
+                    }
+                }
+
+                if (!verificao)
+                {
+                    Console.WriteLine("\nId escolhido é inválido!");
+                    validacao = true;
+                }
+
+            } while (validacao);            
 
             Console.WriteLine("\nFuncionário cadastrado com sucesso!");
 
@@ -209,7 +268,7 @@ namespace PBanco.Entities
         public bool AprovarEmprestimo(Cliente cliente, double valorSolicitado)
         {
             bool validacao;
-            int resposta = 0;                      
+            int resposta = 0;
 
             do
             {
@@ -247,7 +306,7 @@ namespace PBanco.Entities
                         Console.WriteLine("Digite enter para continuar");
                         Console.ReadKey();
                         validacao = true;
-                    }                    
+                    }
                 }
 
                 Console.Clear();
@@ -263,7 +322,7 @@ namespace PBanco.Entities
             {
                 return false;
             }
-        }        
+        }
         public void VerFuncionariosCadastrados(List<Gerente> gerentes, List<Funcionario> funcionarios)
         {
             Console.Clear();

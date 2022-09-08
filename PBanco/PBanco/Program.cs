@@ -222,10 +222,9 @@ namespace PBanco
                                     }                                    
                                 }
 
-                            } while (condicaoDeParada);
+                            
 
-                            do
-                            {                            
+                                                        
                                 switch (opcaoGerente)
                                 {
                                     case 1:
