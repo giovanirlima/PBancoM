@@ -263,10 +263,7 @@ namespace PBanco.Entities
             {
                 return false;
             }
-        }
-
-
-        
+        }        
         public void VerFuncionariosCadastrados(List<Gerente> gerentes, List<Funcionario> funcionarios)
         {
             Console.Clear();

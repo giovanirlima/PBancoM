@@ -48,9 +48,9 @@ namespace PBanco
         }
         static void IniciarBanco()
         {
-            int opcao = 10, opcaoGerente, opcaoCliente, matricula = 0, senha = 0;
+            int opcao = 10, opcaoGerente = 10, opcaoCliente = 10, matricula = 0, senha = 0;
             bool validarMatricula = true, validarSenha = true, condicaoDeParada;
-            char resposta;
+            char resposta = 'a';
 
             List<Gerente> gerentes = new List<Gerente>();
             List<Funcionario> funcionarios = new List<Funcionario>();
@@ -67,182 +67,236 @@ namespace PBanco
 
             do
             {
-                Console.Clear();
-
-                Console.WriteLine("\t\t\tBEM VINDO AO BANCO MORANGÃO!");
-                Console.WriteLine("\n\nVocê é um: ");
-                Console.WriteLine("\n1 - Funcionário\n2 - Cliente\n\n0 - Sair");
-                Console.Write("\nOpção: ");
-                try
+                do
                 {
-                    opcao = int.Parse(Console.ReadLine());
-                    condicaoDeParada = false;
-                }
-                catch (System.FormatException)
-                {
-                    Console.WriteLine("\nFormato inválido!");
-                    Console.WriteLine("Pressione enter para escolher novamente!");
-                    Console.ReadKey();
-                    condicaoDeParada = true;
+                    Console.Clear();
 
-                }
-
-                if (opcao < 0 || opcao > 2)
-                {
-                    if (!condicaoDeParada)
+                    Console.WriteLine("\t\t\tBEM VINDO AO BANCO MORANGÃO!");
+                    Console.WriteLine("\n\nVocê é um: ");
+                    Console.WriteLine("\n1 - Funcionário\n2 - Cliente\n\n0 - Sair");
+                    Console.Write("\nOpção: ");
+                    try
                     {
-                        Console.WriteLine("\nError! Escolha uma das opções listadas!");
+                        opcao = int.Parse(Console.ReadLine());
+                        condicaoDeParada = false;
+                    }
+                    catch (System.FormatException)
+                    {
+                        Console.WriteLine("\nFormato inválido!");
                         Console.WriteLine("Pressione enter para escolher novamente!");
                         Console.ReadKey();
                         condicaoDeParada = true;
-                    }                    
-                }
+
+                    }
+
+                    if (opcao < 0 || opcao > 2)
+                    {
+                        if (!condicaoDeParada)
+                        {
+                            Console.WriteLine("\nError! Escolha uma das opções listadas!");
+                            Console.WriteLine("Pressione enter para escolher novamente!");
+                            Console.ReadKey();
+                            condicaoDeParada = true;
+                        }
+                    }
+                } while (condicaoDeParada);
+
 
                 switch (opcao)
                 {
                     case 1:
-                        do
+                        Console.Clear();
+
+                        try
                         {
-                            Console.Clear();
+                            Console.Write("Olá Gerente, \n\nInfome sua matricula: ");
+                            matricula = int.Parse(Console.ReadLine());
+                            condicaoDeParada = false;
+                        }
+
+                        catch (Exception)
+                        {
+                            Console.WriteLine("\nFormato inválido!");
+                            Console.WriteLine("Pressione enter para retornar ao menu anterior!");
+                            condicaoDeParada = true;
+                            Console.ReadKey();
+                        }
+
+                        foreach (var gerente in gerentes)
+                        {
+                            if (gerente.Matricula == matricula)
+                            {
+                                validarMatricula = false;
+                                g = gerente;
+                            }
+                        }
+
+                        if (!validarMatricula)
+                        {
                             try
                             {
-                                Console.Write("Olá Gerente, \n\nInfome sua matricula: ");
-                                matricula = int.Parse(Console.ReadLine());
+                                Console.Write("Senha: ");
+                                senha = int.Parse(Console.ReadLine());
                             }
                             catch (Exception)
                             {
-                                Console.WriteLine("Formato inválido!");
+                                Console.WriteLine("\nFormato inválido!");
+                                Console.WriteLine("Pressione enter para retornar ao menu anterior!");
+                                condicaoDeParada = true;
+                                Console.ReadKey();
                             }
+
 
                             foreach (var gerente in gerentes)
                             {
-                                if (gerente.Matricula == matricula)
+                                if (gerente.Senha == senha)
                                 {
-                                    validarMatricula = false;
-                                    g = gerente;
+                                    validarSenha = false;
                                 }
                             }
 
-                            if (!validarMatricula)
+                            if (validarSenha)
                             {
-                                try
+                                if (!condicaoDeParada)
                                 {
-                                    Console.Write("Senha: ");
-                                    senha = int.Parse(Console.ReadLine());
-                                }
-                                catch (Exception)
-                                {
-                                    Console.WriteLine("Formato inválido!");
-                                }
-
-
-                                foreach (var gerente in gerentes)
-                                {
-                                    if (gerente.Senha == senha)
-                                    {
-                                        validarSenha = false;
-                                    }
-                                }
-
-                                if (validarSenha)
-                                {
-                                    Console.WriteLine("Senha inválida!");
-                                    Console.WriteLine("Pressione enter para continuar");
+                                    Console.WriteLine("\nSenha inválida!");
+                                    Console.WriteLine("Pressione enter para retornar ao menu anterior!");
                                     Console.ReadKey();
                                 }
-
                             }
+                        }
 
-                            else
-                            {
-                                Console.WriteLine("Matricula inválida!");
-                                Console.WriteLine("Pressione enter para continuar");
-                                Console.ReadKey();
-                            }
-
-                        } while (validarSenha);
-
-                        do
+                        else
                         {
-                            Console.Clear();
-
-                            Console.WriteLine($"Olá {g.Nome}, Infome a opção desejada: ");
-                            Console.WriteLine("");
-                            Console.WriteLine("1 - Cadastrar Funcionario");
-                            Console.WriteLine("2 - Cadastrar Agência");
-                            Console.WriteLine("3 - Ver Funcionarios cadastrados");
-                            Console.WriteLine("4 - Ver Clientes cadastrados");
-                            Console.WriteLine("5 - Ver Agências cadastradas");
-                            Console.WriteLine();
-                            Console.WriteLine("9 - Voltar ao menu anterior");
-                            Console.Write("\nOpção: ");
-                            try
+                            if (!condicaoDeParada)
                             {
-                                opcaoGerente = int.Parse(Console.ReadLine());
-                            }
-                            catch (System.FormatException)
-                            {
-
-                                Console.WriteLine("Opção inválida!");
-                                Console.WriteLine("Escolha uma das opções informadas!");
-                                Console.WriteLine("Pressione uma tecla para continuar");
+                                Console.WriteLine("\nMatricula inválida!");
+                                Console.WriteLine("Pressione enter para retornar ao menu anterior!");
                                 Console.ReadKey();
-                                return;
-
+                                condicaoDeParada = true;
                             }
-                            if (opcaoGerente < 1 || opcaoGerente > 5 && opcaoGerente != 9)
+                            
+                        }
+
+                        if (!validarSenha)
+                        {
+                            do
                             {
                                 Console.Clear();
-                                Console.WriteLine("Opção inválida!");
-                                Console.WriteLine("\nEscolha uma das opções informadas!");
-                                Console.WriteLine("Pressione uma tecla para continuar");
-                                Console.ReadKey();
-                                return;
 
-                            }
+                                Console.WriteLine($"Olá {g.Nome}, Infome a opção desejada: ");
+                                Console.WriteLine("");
+                                Console.WriteLine("1 - Cadastrar Funcionario");
+                                Console.WriteLine("2 - Cadastrar Agência");
+                                Console.WriteLine("3 - Ver Funcionarios cadastrados");
+                                Console.WriteLine("4 - Ver Clientes cadastrados");
+                                Console.WriteLine("5 - Ver Agências cadastradas");
+                                Console.WriteLine();
+                                Console.WriteLine("9 - Voltar ao menu anterior");
+                                Console.Write("\nOpção: ");
+                                try
+                                {
+                                    opcaoGerente = int.Parse(Console.ReadLine());
+                                    condicaoDeParada = false;
+                                }
 
-                            switch (opcaoGerente)
-                            {
-                                case 1:
-                                    Console.Clear();
-                                    Console.Write("Novo funcionário é um gerente? (s/n) ");
-                                    resposta = char.Parse(Console.ReadLine().ToLower());
+                                catch (System.FormatException)
+                                {
 
-                                    if (resposta == 'n')
-                                    {
-                                        g.CadastraFuncionario(gerentes, funcionarios, agencias);
+                                    Console.WriteLine("\nOpção inválida!");
+                                    Console.WriteLine("Escolha uma das opções informadas!");
+                                    Console.WriteLine("Pressione uma tecla para continuar");
+                                    condicaoDeParada = true;
+                                    Console.ReadKey();                                    
+                                }
+
+                                if (opcaoGerente < 1 || opcaoGerente > 5 && opcaoGerente != 9)
+                                {
+                                    if (!condicaoDeParada)
+                                    {                                        
+                                        Console.WriteLine("\nOpção inválida!");
+                                        Console.WriteLine("Escolha uma das opções informadas!");
+                                        Console.WriteLine("Pressione uma tecla para continuar");
+                                        condicaoDeParada = true;
+                                        Console.ReadKey();                                        
+                                    }                                    
+                                }
+
+                            } while (condicaoDeParada);
+
+                            do
+                            {                            
+                                switch (opcaoGerente)
+                                {
+                                    case 1:
+
+                                        Console.Clear();
+
+                                        do
+                                        {
+                                            Console.Write("Novo funcionário é um gerente? (s/n) ");
+
+                                            try
+                                            {
+                                                resposta = char.Parse(Console.ReadLine().ToLower());
+                                                condicaoDeParada = false;
+                                            }
+
+                                            catch (Exception)
+                                            {
+                                                Console.WriteLine("\nParametro de entrada inválido, escolha entre (s / n)\n");
+                                                condicaoDeParada = true;
+                                            }
+
+                                            if (resposta != 's' && resposta != 'n')
+                                            {
+                                                if (!condicaoDeParada)
+                                                {
+                                                    Console.WriteLine("\nParametro de entrada inválido, escolha entre (s / n)\n");
+                                                    condicaoDeParada = true;
+                                                }
+                                            }
+
+
+                                        } while (condicaoDeParada);
+
+
+                                        if (resposta == 'n')
+                                        {
+                                            g.CadastraFuncionario(gerentes, funcionarios, agencias);
+                                            Console.ReadKey();
+                                        }
+                                        else
+                                        {
+                                            g.CadastrarGerente(gerentes, funcionarios, agencias);
+                                            Console.ReadKey();
+                                        }
+                                        break;
+
+                                    case 2:
+                                        g.CadastrarAgencia(agencias);
                                         Console.ReadKey();
-                                    }
-                                    else
-                                    {
-                                        g.CadastrarGerente(gerentes, funcionarios, agencias);
+                                        break;
+
+                                    case 3:
+                                        g.VerFuncionariosCadastrados(gerentes, funcionarios);
                                         Console.ReadKey();
-                                    }
-                                    break;
+                                        break;
 
-                                case 2:
-                                    g.CadastrarAgencia(agencias);
-                                    Console.ReadKey();
-                                    break;
+                                    case 4:
+                                        g.VerClientesCadastrados(clientes);
+                                        Console.ReadKey();
+                                        break;
 
-                                case 3:
-                                    g.VerFuncionariosCadastrados(gerentes, funcionarios);
-                                    Console.ReadKey();
-                                    break;
+                                    case 5:
+                                        g.VerAgenciasCadastradas(agencias);
+                                        Console.ReadKey();
+                                        break;
 
-                                case 4:
-                                    g.VerClientesCadastrados(clientes);
-                                    Console.ReadKey();
-                                    break;
+                                }
 
-                                case 5:
-                                    g.VerAgenciasCadastradas(agencias);
-                                    Console.ReadKey();
-                                    break;
-
-                            }
-
-                        } while (opcaoGerente != 9);
+                            } while (opcaoGerente != 9);
+                        }
                         break;
 
                     case 2:
@@ -264,7 +318,7 @@ namespace PBanco
 
                             catch (System.FormatException)
                             {
-                                Console.WriteLine("Opção inválida!");
+                                Console.WriteLine("\nOpção inválida!");
                                 Console.WriteLine("Pressione enter para voltar ao menu");
                                 Console.ReadKey();
                                 return;
@@ -273,7 +327,7 @@ namespace PBanco
                             if (opcaoCliente < 1 || opcaoCliente > 4 && opcaoCliente != 9)
                             {
 
-                                Console.WriteLine("Digite um número válido!");
+                                Console.WriteLine("\nDigite um número válido!");
                                 Console.WriteLine("Pressione enter para voltar ao menu");
                                 Console.ReadKey();
                             }
@@ -298,12 +352,12 @@ namespace PBanco
                                 case 4:
                                     cliente.AcessarConta(clientes);
                                     break;
-                                
+
                             }
 
                         } while (opcaoCliente != 9);
                         break;
-                }                            
+                }
 
             } while (opcao != 0);
         }
