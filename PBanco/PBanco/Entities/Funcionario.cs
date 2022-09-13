@@ -57,7 +57,7 @@ namespace PBanco.Entities
                 }
             }
         }
-        public Cliente CadastrarCliente(List<Cliente> clientes, List<Agencia> agencias)
+        public void CadastrarCliente(List<Cliente> clientes, List<Agencia> agencias)
         {
             DateTime nascimento = DateTime.Now;
             Cliente cliente1;
@@ -183,18 +183,10 @@ namespace PBanco.Entities
 
                 Console.WriteLine("Pressione enter para continuar!");
 
-                cliente1 = new Cliente(nome, cpf, nascimento, telefone, endereco, salario, new ContaCorrente(id, senha, agencias[idAgencia - 1], 0, chequeEspecial, new Cartao(id, 0, 30, false)), new ContaPoupanca(id, agencias[idAgencia - 1], 0));
-
-                return cliente1;
-            }
-
-            else
-            {
-                return null;
+                clientes.Add(new Cliente(nome, cpf, nascimento, telefone, endereco, salario, new ContaCorrente(id, senha, agencias[idAgencia - 1], 0, chequeEspecial, new Cartao(id, 0, 30, false)), new ContaPoupanca(id, agencias[idAgencia - 1], 0)));
+                                
             }
         }
-
-
         public override string ToString()
         {
             return $"\nNome: {Nome}\nMatricula: {Matricula}\nAgência: {Agencia.ToString()}";

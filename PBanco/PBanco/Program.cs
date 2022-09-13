@@ -334,7 +334,7 @@ namespace PBanco
                             switch (opcaoCliente)
                             {
                                 case 1:
-                                    clientes.Add(cliente.SolicitarAbertura(clientes, agencias));
+                                    cliente.SolicitarAbertura(clientes, agencias);
                                     Console.ReadKey();
                                     break;
 

@@ -33,13 +33,12 @@ namespace PBanco.Entities
             ContaPoupanca = contaPoupanca;
         }
 
-        public Cliente SolicitarAbertura(List<Cliente> clientes, List<Agencia> agencias)
+        public void SolicitarAbertura(List<Cliente> clientes, List<Agencia> agencias)
         {
-            Cliente cliente = new Cliente();
             Funcionario funcionario = new Funcionario();
             char resposta = 'a';
-            bool validacao = false;
-                        
+            bool validacao;
+
             do
             {
                 Console.Clear();
@@ -68,19 +67,19 @@ namespace PBanco.Entities
                         Console.WriteLine("Digite enter para iniciar novamente!");
                         validacao = true;
                     }
-                }               
+                }
 
             } while (validacao);
-            
+
 
             if (resposta == 's')
             {
-                return funcionario.CadastrarCliente(clientes, agencias);
+                funcionario.CadastrarCliente(clientes, agencias);
             }
             else
             {
                 Console.WriteLine("Até logo!");
-                return null;
+                return;
             }
         }
         public void DesbloquearCartao(List<Cliente> clientes)
